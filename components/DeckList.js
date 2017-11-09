@@ -82,7 +82,6 @@ export default class DeckList extends Component {
   }
 
   render() {
-    console.log(testData)
     return (
       <View style={styles.container}>
         <FlatList
