@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, FlatList } from 'react-native';
 import Deck from './Deck';
 import { darkGreen } from '../utils/colours';
+import { connect } from 'react-redux';
+import { getDecks } from '../actions';
 
 const testData = [
   {
@@ -76,7 +78,7 @@ const testData = [
   }
 ]
 
-export default class DeckList extends Component {
+class DeckList extends Component {
   renderItem = ({ item }) => {
     return <Deck {...item} />
   }
@@ -104,3 +106,11 @@ const styles = StyleSheet.create({
     backgroundColor: darkGreen
   },
 });
+
+function mapStateToProps (state) {
+  return {
+    decks: state.decks
+  }
+};
+
+export default connect(mapStateToProps, { getDecks })(DeckList);
