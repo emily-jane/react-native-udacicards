@@ -3,15 +3,20 @@ import { Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { lightPurple, darkGreen } from '../utils/colours';
 
 export default class Deck extends Component {
-  pressDeck() {
+  constructor(props) {
+    super(props)
+  }
 
+  pressDeck() {
+    console.log(this.props)
+    this.props.navigation.navigate('DeckDetail', {deckTitle: this.props.title});
   }
 
   render() {
     const questionCount = this.props.questions.length;
 
     return (
-      <TouchableOpacity style={styles.deck} onPress={this.pressDeck}>
+      <TouchableOpacity style={styles.deck} onPress={this.pressDeck.bind(this)}>
         <Text style={styles.deckTitle}>{this.props.title}</Text>
         <Text style={styles.deckCount}>{`${questionCount} card${questionCount === 1 ? '' : 's'}`}</Text>
       </TouchableOpacity>

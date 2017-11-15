@@ -8,15 +8,18 @@ import {
   KeyboardAvoidingView
 } from 'react-native';
 import { darkGreen, white } from '../utils/colours';
+import { addDeckTitle } from '../actions';
+import { connect } from 'react-redux';
 
-export default class NewDeck extends Component {
+class NewDeck extends Component {
   constructor(props) {
     super(props);
     this.state = { text: '' }
   }
 
   createDeck() {
-    console.log('button pressed!')
+    this.props.addDeckTitle(this.state.text);
+    console.log(this.props)
   }
 
   render() {
@@ -31,7 +34,7 @@ export default class NewDeck extends Component {
           selectionColor='gray'
           underlineColorAndroid='gray'
         />
-        <TouchableOpacity onPress={this.createDeck} style={styles.submitBtn}>
+        <TouchableOpacity onPress={this.createDeck.bind(this)} style={styles.submitBtn}>
           <Text style={styles.submitBtnText}>Create Deck</Text>
         </TouchableOpacity>
         <View style={{ height: 60 }} />
@@ -77,3 +80,11 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   }
 })
+
+function mapStateToProps (state) {
+  return {
+    decks: state.decks
+  }
+};
+
+export default connect(mapStateToProps, { addDeckTitle })(NewDeck);

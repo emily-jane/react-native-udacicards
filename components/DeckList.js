@@ -79,8 +79,20 @@ const testData = [
 ]
 
 class DeckList extends Component {
+  // constructor(props) {
+  //   super(props)
+  //   this.state = {
+  //     decks: {}
+  //   }
+  // }
+
+  componentDidMount() {
+    getDecks();
+    console.log(this.props.decks)
+  }
+
   renderItem = ({ item }) => {
-    return <Deck {...item} />
+    return <Deck {...item} {...this.props} />
   }
 
   render() {

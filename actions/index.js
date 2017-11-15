@@ -15,7 +15,7 @@ export const getDecks = () => dispatch => {
         payload: JSON.parse(response)
       })
     })
-}
+};
 
 export const addDeckTitle = (title) => dispatch => {
   const newDeck = {
@@ -32,7 +32,7 @@ export const addDeckTitle = (title) => dispatch => {
         payload: newDeck
       })
     })
-}
+};
 
 export const addCardToDeck = ({question, answer, deck}) => dispatch => {
   const mergeNewCard = {
@@ -51,7 +51,7 @@ export const addCardToDeck = ({question, answer, deck}) => dispatch => {
         payload: mergeNewCard
       })
     })
-}
+};
 
 // export const deleteDeck = (deck) => dispatch => {
 //   AsyncStorage.removeItem(DECKS_STORAGE_KEY, )

@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 import { View, StatusBar, Platform } from 'react-native';
 import DeckList from './components/DeckList';
 import NewDeck from './components/NewDeck';
+import DeckDetail from './components/DeckDetail';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 import { Constants } from 'expo';
 import { darkPurple } from './utils/colours';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import promise from 'redux-promise';
+import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import reducer from './reducers';
 
@@ -57,16 +60,26 @@ const MainNavigator = StackNavigator({
   Decks: {
     screen: Tabs,
   },
-  // EntryDetail: {
-  //   screen: EntryDetail,
-  //   navigationOptions: {
-  //     headerTintColor: '#FFFFFF',
-  //     headerStyle: {
-  //       backgroundColor: darkPurple,
-  //     }
-  //   }
-  // }
+  DeckDetail: {
+    screen: DeckDetail,
+    navigationOptions: {
+      headerTintColor: '#FFFFFF',
+      headerStyle: {
+        backgroundColor: darkPurple,
+      }
+    }
+  }
 })
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+
+const store = createStore(
+  reducer,
+  {},
+  composeEnhancers(
+    applyMiddleware(promise, thunk)
+  )
+)
 
 export default class App extends Component {
   render() {
@@ -74,7 +87,7 @@ export default class App extends Component {
       <Provider store={createStore(reducer)}>
         <View style={{flex: 1}}>
           <AppStatusBar backgroundColor={darkPurple} barStyle='light-content' />
-          <MainNavigator />
+          <Tabs />
         </View>
       </Provider>
     )
