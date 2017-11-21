@@ -13,15 +13,18 @@ export default class DeckDetail extends Component {
   }
 
   render() {
-    const { deckTitle } = this.props;
-    console.log(deckTitle);
+    const { title, questions } = this.props.navigation.state.params;
+    const questionCount = questions.length;
 
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>DECK TITLE</Text>
-        <Text>XXX Cards</Text>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.deckCount}>{`${questionCount} card${questionCount === 1 ? '' : 's'}`}</Text>
         <TouchableOpacity style={styles.submitBtn}>
-          <Text style={styles.submitBtnText}>Do something</Text>
+          <Text style={styles.submitBtnText}>Add Question</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.submitBtn}>
+          <Text style={styles.submitBtnText}>START QUIZ!</Text>
         </TouchableOpacity>
       </View>
     )
@@ -37,6 +40,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     textAlign: 'center',
+    marginBottom: 30
+  },
+  deckCount: {
+    textAlign: 'center',
+    fontSize: 20,
     marginBottom: 30
   },
   submitBtn: {

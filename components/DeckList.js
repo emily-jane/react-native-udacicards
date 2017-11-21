@@ -5,90 +5,10 @@ import { darkGreen } from '../utils/colours';
 import { connect } from 'react-redux';
 import { getDecks } from '../actions';
 
-const testData = [
-  {
-    title: 'React',
-    questions: [
-      {
-        question: 'What is React?',
-        answer: 'A library for managing user interfaces'
-      },
-      {
-        question: 'Where do you make Ajax requests in React?',
-        answer: 'The componentDidMount lifecycle event'
-      }
-    ]
-  },
-  {
-    title: 'JavaScript',
-    questions: [
-      {
-        question: 'What is a closure?',
-        answer: 'The combination of a function and the lexical environment within which that function was declared.'
-      }
-    ]
-  },
-  {
-    title: 'Redux',
-    questions: [
-      {
-        question: 'What is Redux',
-        answer: 'Global state management'
-      },
-      {
-        question: 'Where do you make Ajax requests in React?',
-        answer: 'The componentDidMount lifecycle event'
-      }
-    ]
-  },
-    {
-    title: 'Native',
-    questions: [
-      {
-        question: 'What is React?',
-        answer: 'A library for managing user interfaces'
-      },
-      {
-        question: 'Where do you make Ajax requests in React?',
-        answer: 'The componentDidMount lifecycle event'
-      }
-    ]
-  },
-  {
-    title: 'Emily',
-    questions: [
-      {
-        question: 'What is a closure?',
-        answer: 'The combination of a function and the lexical environment within which that function was declared.'
-      }
-    ]
-  },
-  {
-    title: 'Carson',
-    questions: [
-      {
-        question: 'What is Redux',
-        answer: 'Global state management'
-      },
-      {
-        question: 'Where do you make Ajax requests in React?',
-        answer: 'The componentDidMount lifecycle event'
-      }
-    ]
-  }
-]
-
 class DeckList extends Component {
-  // constructor(props) {
-  //   super(props)
-  //   this.state = {
-  //     decks: {}
-  //   }
-  // }
-
   componentDidMount() {
-    getDecks();
-    console.log(this.props.decks)
+    this.props.getDecks();
+
   }
 
   renderItem = ({ item }) => {
@@ -96,10 +16,13 @@ class DeckList extends Component {
   }
 
   render() {
+    const { decks } = this.props;
+    console.log('decks', decks)
+
     return (
       <View style={styles.container}>
         <FlatList
-          data={testData}
+          data={decks}
           renderItem={this.renderItem}
           keyExtractor={(item, index) => index}
         />
@@ -121,7 +44,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps (state) {
   return {
-    decks: state.decks
+    decks: state
   }
 };
 

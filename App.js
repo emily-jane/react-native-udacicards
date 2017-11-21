@@ -8,10 +8,10 @@ import { Constants } from 'expo';
 import { darkPurple } from './utils/colours';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { createStore, applyMiddleware, compose } from 'redux';
-import promise from 'redux-promise';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
-import reducer from './reducers';
+import decks from './reducers';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 function AppStatusBar ({ backgroundColor, ...props }) {
   return (
@@ -71,23 +71,22 @@ const MainNavigator = StackNavigator({
   }
 })
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 const store = createStore(
-  reducer,
-  {},
-  composeEnhancers(
-    applyMiddleware(promise, thunk)
+  decks,
+  composeWithDevTools(
+    applyMiddleware(thunk)
   )
 )
 
 export default class App extends Component {
   render() {
     return (
-      <Provider store={createStore(reducer)}>
+      <Provider store={store}>
         <View style={{flex: 1}}>
           <AppStatusBar backgroundColor={darkPurple} barStyle='light-content' />
-          <Tabs />
+          <MainNavigator />
         </View>
       </Provider>
     )

@@ -5,25 +5,27 @@ import {
   ADD_CARD_TO_DECK
 } from '../actions';
 
-function decks (state = {}, action) {
+function decks (state = [], action) {
   switch (action.type) {
     case GET_DECKS :
-      return {
-        ...state,
+      console.log('state', ...state)
+      return [
         ...action.payload
-      }
+      ]
     case ADD_DECK_TITLE :
-      return {
+      return [
         ...state,
-        ...action.payload
-      }
+        action.payload
+      ]
     case ADD_CARD_TO_DECK :
-      return {
+      return [
         ...state,
-        ...action.payload
-      }
+        action.payload
+      ]
     default :
-      return state
+      return [
+        ...state
+      ]
   }
 }
 

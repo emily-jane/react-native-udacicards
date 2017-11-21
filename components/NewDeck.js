@@ -10,6 +10,7 @@ import {
 import { darkGreen, white } from '../utils/colours';
 import { addDeckTitle } from '../actions';
 import { connect } from 'react-redux';
+import { NavigationActions } from 'react-navigation';
 
 class NewDeck extends Component {
   constructor(props) {
@@ -17,9 +18,20 @@ class NewDeck extends Component {
     this.state = { text: '' }
   }
 
+  resetForm() {
+    this.setState({
+      text: ''
+    })
+  }
+
+  toHome() {
+    this.props.navigation.navigate('Decks');
+  }
+
   createDeck() {
     this.props.addDeckTitle(this.state.text);
-    console.log(this.props)
+    this.resetForm();
+    this.toHome();
   }
 
   render() {
@@ -83,7 +95,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps (state) {
   return {
-    decks: state.decks
+    decks: state
   }
 };
 

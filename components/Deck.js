@@ -8,8 +8,8 @@ export default class Deck extends Component {
   }
 
   pressDeck() {
-    console.log(this.props)
-    this.props.navigation.navigate('DeckDetail', {deckTitle: this.props.title});
+    // console.log(this.props)
+    this.props.navigation.navigate('DeckDetail', this.props);
   }
 
   render() {
