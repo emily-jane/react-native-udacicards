@@ -5,25 +5,35 @@ import {
   StyleSheet,
   TouchableOpacity
 } from 'react-native';
-import { darkGreen, white } from '../utils/colours';
+import { darkGreen, white, darkOrange } from '../utils/colours';
+import { connect } from 'react-redux';
 
-export default class DeckDetail extends Component {
+class DeckDetail extends Component {
   constructor(props) {
     super(props);
+    console.log(this.props)
+  }
+
+  addCard() {
+    this.props.navigation.navigate('NewCard', this.props.navigation.state.params)
+  }
+
+  singleDeck() {
+    return this.props.decks.find(deck => deck.title === this.props.navigation.state.params.title);
   }
 
   render() {
-    const { title, questions } = this.props.navigation.state.params;
+    const { title, questions } = this.singleDeck();
     const questionCount = questions.length;
 
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.deckCount}>{`${questionCount} card${questionCount === 1 ? '' : 's'}`}</Text>
-        <TouchableOpacity style={styles.submitBtn}>
+        <TouchableOpacity onPress={this.addCard.bind(this)} style={styles.submitBtn}>
           <Text style={styles.submitBtnText}>Add Question</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.submitBtn}>
+        <TouchableOpacity style={[styles.submitBtn, {backgroundColor: darkOrange}]}>
           <Text style={styles.submitBtnText}>START QUIZ!</Text>
         </TouchableOpacity>
       </View>
@@ -64,3 +74,11 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   }
 })
+
+function mapStateToProps (state) {
+  return {
+    decks: state
+  }
+};
+
+export default connect(mapStateToProps, {})(DeckDetail);

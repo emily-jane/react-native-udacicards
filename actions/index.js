@@ -34,20 +34,19 @@ export const addDeckTitle = (title) => dispatch => {
 };
 
 export const addCardToDeck = ({question, answer, deck}) => dispatch => {
-  const mergeNewCard = {
-    [deck]: {
-      questions: [{
-        question,
-        answer
-      }]
-    }
+  const newCard = {
+    title: deck,
+    questions: [{
+      question,
+      answer
+    }]
   };
 
-  AsyncStorage.mergeItem(DECKS_STORAGE_KEY, JSON.stringify(mergeNewCard))
+  AsyncStorage.mergeItem(DECKS_STORAGE_KEY, JSON.stringify(newCard))
     .then(() => {
       return dispatch({
         type: ADD_CARD_TO_DECK,
-        payload: mergeNewCard
+        payload: newCard
       })
     })
 };

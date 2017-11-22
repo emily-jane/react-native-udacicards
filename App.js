@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, StatusBar, Platform } from 'react-native';
 import DeckList from './components/DeckList';
 import NewDeck from './components/NewDeck';
+import NewCard from './components/NewCard';
 import DeckDetail from './components/DeckDetail';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 import { Constants } from 'expo';
@@ -68,6 +69,16 @@ const MainNavigator = StackNavigator({
         backgroundColor: darkPurple,
       }
     }
+  },
+  NewCard: {
+    screen: NewCard,
+    navigationOptions: ({ navigation }) => ({
+      title: `${navigation.state.params.title}`,
+      headerTintColor: '#FFFFFF',
+      headerStyle: {
+        backgroundColor: darkPurple,
+      }
+    })
   }
 })
 

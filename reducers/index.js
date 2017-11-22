@@ -8,7 +8,6 @@ import {
 function decks (state = [], action) {
   switch (action.type) {
     case GET_DECKS :
-      console.log('state', ...state)
       return [
         ...action.payload
       ]
@@ -18,6 +17,7 @@ function decks (state = [], action) {
         action.payload
       ]
     case ADD_CARD_TO_DECK :
+      console.log(action.payload)
       return [
         ...state,
         action.payload
