@@ -8,9 +8,9 @@ export const DELETE_DECK = 'DELETE_DECK';
 const DECKS_STORAGE_KEY = 'UdaciCards:Decks';
 
 export const getDecks = () => dispatch => {
-  // AsyncStorage.removeItem(DECKS_STORAGE_KEY)
   AsyncStorage.getItem(DECKS_STORAGE_KEY)
     .then((response) => {
+      console.log('response', JSON.parse(response))
       return dispatch({
         type: GET_DECKS,
         payload: JSON.parse(response)
@@ -33,7 +33,7 @@ export const addDeckTitle = (title) => dispatch => {
     })
 };
 
-export const addCardToDeck = ({question, answer, deck}) => dispatch => {
+export const addCardToDeck = (question, answer, deck) => dispatch => {
   const newCard = {
     title: deck,
     questions: [{

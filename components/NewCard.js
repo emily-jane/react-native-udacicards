@@ -21,7 +21,6 @@ class NewCard extends Component {
   }
 
   addCard() {
-    console.log('add this card!')
     this.props.addCardToDeck(this.state.question, this.state.answer, this.props.navigation.state.params.title);
     this.props.navigation.navigate('DeckDetail', this.props.navigation.state.params);
   }
