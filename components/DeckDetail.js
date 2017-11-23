@@ -9,21 +9,16 @@ import { darkGreen, white, darkOrange } from '../utils/colours';
 import { connect } from 'react-redux';
 
 class DeckDetail extends Component {
-  constructor(props) {
-    super(props);
-    console.log(this.props)
-  }
-
   addCard() {
-    this.props.navigation.navigate('NewCard', this.props.navigation.state.params)
+    this.props.navigation.navigate('NewCard', this.props.deck)
   }
 
-  singleDeck() {
-    return this.props.decks.find(deck => deck.title === this.props.navigation.state.params.title);
+  startQuiz() {
+    this.props.navigation.navigate('Quiz', this.props.deck)
   }
 
   render() {
-    const { title, questions } = this.singleDeck();
+    const { title, questions } = this.props.deck;
     const questionCount = questions.length;
 
     return (
@@ -33,7 +28,7 @@ class DeckDetail extends Component {
         <TouchableOpacity onPress={this.addCard.bind(this)} style={styles.submitBtn}>
           <Text style={styles.submitBtnText}>Add Question</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.submitBtn, {backgroundColor: darkOrange}]}>
+        <TouchableOpacity onPress={this.startQuiz.bind(this)} style={[styles.submitBtn, {backgroundColor: darkOrange}]}>
           <Text style={styles.submitBtnText}>START QUIZ!</Text>
         </TouchableOpacity>
       </View>
@@ -75,9 +70,9 @@ const styles = StyleSheet.create({
   }
 })
 
-function mapStateToProps (state) {
+function mapStateToProps (state, ownProps) {
   return {
-    decks: state
+    deck: state.find(deck => deck.title === ownProps.navigation.state.params.title)
   }
 };
 

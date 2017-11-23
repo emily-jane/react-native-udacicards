@@ -4,6 +4,7 @@ import DeckList from './components/DeckList';
 import NewDeck from './components/NewDeck';
 import NewCard from './components/NewCard';
 import DeckDetail from './components/DeckDetail';
+import Quiz from './components/Quiz';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 import { Constants } from 'expo';
 import { darkPurple } from './utils/colours';
@@ -79,10 +80,18 @@ const MainNavigator = StackNavigator({
         backgroundColor: darkPurple,
       }
     })
+  },
+  Quiz: {
+    screen: Quiz,
+    navigationOptions: ({ navigation }) => ({
+      title: `${navigation.state.params.title}`,
+      headerTintColor: '#FFFFFF',
+      headerStyle: {
+        backgroundColor: darkPurple,
+      }
+    })
   }
 })
-
-// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 const store = createStore(
   decks,

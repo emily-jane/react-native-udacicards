@@ -17,7 +17,6 @@ class DeckList extends Component {
 
   render() {
     const { decks } = this.props;
-    console.log('decks', decks)
 
     return (
       <View style={styles.container}>

@@ -10,7 +10,6 @@ const DECKS_STORAGE_KEY = 'UdaciCards:Decks';
 export const getDecks = () => dispatch => {
   AsyncStorage.getItem(DECKS_STORAGE_KEY)
     .then((response) => {
-      console.log('response', JSON.parse(response))
       return dispatch({
         type: GET_DECKS,
         payload: JSON.parse(response)
@@ -25,7 +24,6 @@ export const addDeckTitle = (title) => dispatch => {
   };
   AsyncStorage.mergeItem(DECKS_STORAGE_KEY, JSON.stringify(newDeck))
     .then(() => {
-      console.log(newDeck)
       return dispatch({
         type: ADD_DECK_TITLE,
         payload: newDeck
