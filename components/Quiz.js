@@ -3,10 +3,12 @@ import {
   Text,
   View,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  Animated
 } from 'react-native';
-import { brightGreen, red, white } from '../utils/colours';
+import { darkGreen, brightGreen, red, white, darkOrange } from '../utils/colours';
 import { connect } from 'react-redux';
+import FlipCard from 'react-native-flip-card';
 
 class Quiz extends Component {
   constructor(props) {
@@ -17,13 +19,24 @@ class Quiz extends Component {
     }
   }
 
+  addCard() {
+    this.props.navigation.navigate('NewCard', this.props.deck)
+  }
+
+  restartQuiz() {
+    this.props.navigation.navigate('Quiz', this.props.deck)
+  }
+
   noQuestions() {
     console.log('no questions')
     return (
       <View style={styles.container}>
         <Text style={styles.title}>
-          NO QUESTIONS! GO ADD SOME!
+          There are not yet any questions in this quiz!
         </Text>
+        <TouchableOpacity onPress={this.addCard.bind(this)} style={[styles.submitBtn, {backgroundColor: darkGreen}]}>
+          <Text style={styles.submitBtnText}>Add Question</Text>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -33,8 +46,14 @@ class Quiz extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>
-          QUIZ COMPLETED! WOAH! Score is {this.state.score} out of {this.props.deck.questions.length}
+          QUIZ COMPLETED!
         </Text>
+        <Text style={styles.questionTally}>
+          Final score is {this.state.score} out of {this.props.deck.questions.length}
+        </Text>
+        <TouchableOpacity onPress={this.restartQuiz.bind(this)} style={[styles.submitBtn, {backgroundColor: darkOrange}]}>
+          <Text style={styles.submitBtnText}>Restart Quiz</Text>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -71,15 +90,35 @@ class Quiz extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.questionTally}>Question {questionsCompleted + 1} of {questionCount}</Text>
-        <Text>Question: {question}</Text>
-        <Text>Answer: {answer}</Text>
-
-        <TouchableOpacity onPress={this.questionCorrect.bind(this)} style={[styles.submitBtn, {backgroundColor: brightGreen}]}>
-          <Text style={styles.submitBtnText}>Correct</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.questionIncorrect.bind(this)} style={[styles.submitBtn, {backgroundColor: red}]}>
-          <Text style={styles.submitBtnText}>Incorrect</Text>
-        </TouchableOpacity>
+        <View style={styles.flipCard}>
+          <FlipCard
+            style={styles.questionCard}
+            friction={6}
+            perspective={1000}
+            flipHorizontal={true}
+            flipVertical={false}
+            flip={false}
+            clickable={true}
+            onFlipEnd={(isFlipEnd)=>{console.log('isFlipEnd', isFlipEnd)}}
+          >
+            {/* Face Side */}
+            <View style={styles.question}>
+              <Text>The Face</Text>
+            </View>
+            {/* Back Side */}
+            <View style={styles.answer}>
+              <Text>The Back</Text>
+            </View>
+          </FlipCard>
+        </View>
+        <View style={styles.btnContainer}>
+          <TouchableOpacity onPress={this.questionCorrect.bind(this)} style={[styles.submitBtn, {backgroundColor: brightGreen}]}>
+            <Text style={styles.submitBtnText}>Correct</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.questionIncorrect.bind(this)} style={[styles.submitBtn, {backgroundColor: red}]}>
+            <Text style={styles.submitBtnText}>Incorrect</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     )
   };
@@ -87,19 +126,52 @@ class Quiz extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'stretch',
-    justifyContent: 'center'
+    flex: 1
   },
   title: {
     fontSize: 32,
     textAlign: 'center',
-    marginBottom: 30
+    marginBottom: 30,
+    paddingLeft: 10,
+    paddingRight: 20
   },
   questionTally: {
+    flex: 1,
     fontSize: 20,
     textAlign: 'center',
-    marginBottom: 30
+    justifyContent: 'center'
+  },
+  flipCard: {
+    flex: 2,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  questionCard: {
+    backgroundColor: '#F2F2F2',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 30,
+    marginBottom: 8,
+    marginLeft: 8,
+    marginRight: 8,
+    borderRadius: 8,
+    backfaceVisibility: 'hidden'
+  },
+  question: {
+    flex: 1,
+    height: 200,
+    justifyContent: 'center',
+    flexDirection: 'column',
+  },
+  answer: {
+    transform: [{scaleX: -1}],
+    flex: 1,
+    height: 200,
+    justifyContent: 'center',
+    flexDirection: 'column',
+  },
+  btnContainer: {
+    flex: 1
   },
   submitBtn: {
     padding: 10,
