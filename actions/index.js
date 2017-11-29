@@ -1,4 +1,4 @@
-import { fetchDecks, createDeck, addCard } from '../utils/api';
+import { fetchDecks, createDeck, createDeckCard } from '../utils/api';
 
 export const GET_DECKS = 'GET_DECKS';
 export const ADD_DECK_TITLE = 'ADD_DECK_TITLE';
@@ -41,7 +41,7 @@ export const addCardToDeck = (question, answer, deck) => dispatch => {
     }]
   };
 
-  AsyncStorage.mergeItem(DECKS_STORAGE_KEY, JSON.stringify(newCard))
+  createDeckCard(newCard)
     .then(() => {
       return dispatch({
         type: ADD_CARD_TO_DECK,

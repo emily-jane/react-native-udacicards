@@ -16,7 +16,7 @@ function decks (state = [], action) {
       ]
     case ADD_CARD_TO_DECK :
       return state.map((deck) => {
-        return (deck.title === action.payload.title) ? {...deck, questions: [...deck.questions, action.payload.questions[0]]} : deck
+        return (deck.title === action.payload.title) ? {...deck, questions: [...deck.questions, ...action.payload.questions]} : deck
       })
     default :
       return [

@@ -5,7 +5,6 @@ const DECKS_STORAGE_KEY = 'UdaciCards:Decks';
 const dummyData = [
   {
     title: 'React',
-    score: null,
     questions: [
       {
         question: 'What is React?',
@@ -19,7 +18,6 @@ const dummyData = [
   },
   {
     title: 'JavaScript',
-    score: null,
     questions: [
       {
         question: 'What is a closure?',
@@ -29,7 +27,6 @@ const dummyData = [
   },
   {
     title: 'Redux',
-    score: null,
     questions: [
       {
         question: 'What is React?',
@@ -43,7 +40,6 @@ const dummyData = [
   },
   {
     title: 'French',
-    score: null,
     questions: [
       {
         question: 'How do you say thank you in French?',
@@ -58,8 +54,6 @@ const dummyData = [
   },
   {
     title: 'German',
-    score:
-      null,
     questions:
       [
         {
@@ -74,7 +68,6 @@ const dummyData = [
   },
   {
     title: 'Italian',
-    score: null,
     questions: [
       {
         question: 'How do you say thank you in Italian?',
@@ -106,6 +99,17 @@ export function createDeck(newDeck) {
     .then((results) => {
       const data = results ? JSON.parse(results) : []
       data.push(newDeck);
+      AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(data));
+      return (data);
+    });
+}
+
+export function createDeckCard(newCard) {
+  return AsyncStorage.getItem(DECKS_STORAGE_KEY)
+    .then((results) => {
+      const data = JSON.parse(results).map((deck) => {
+        return deck.title === newCard.title ? {title: deck.title, questions: [...deck.questions, ...newCard.questions]} : deck
+      });
       AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(data));
       return (data);
     });

@@ -101,13 +101,11 @@ class Quiz extends Component {
             clickable={true}
             onFlipEnd={(isFlipEnd)=>{console.log('isFlipEnd', isFlipEnd)}}
           >
-            {/* Face Side */}
             <View style={styles.question}>
-              <Text>The Face</Text>
+              <Text>{question}</Text>
             </View>
-            {/* Back Side */}
             <View style={styles.answer}>
-              <Text>The Back</Text>
+              <Text>{answer}</Text>
             </View>
           </FlipCard>
         </View>
@@ -139,12 +137,15 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 20,
     textAlign: 'center',
-    justifyContent: 'center'
-  },
-  flipCard: {
-    flex: 2,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  flipCard: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 400,
+    alignSelf: 'stretch'
   },
   questionCard: {
     backgroundColor: '#F2F2F2',
@@ -155,7 +156,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     marginRight: 8,
     borderRadius: 8,
-    backfaceVisibility: 'hidden'
+    // backfaceVisibility: 'hidden'
   },
   question: {
     flex: 1,
