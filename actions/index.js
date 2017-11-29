@@ -1,28 +1,29 @@
-import { AsyncStorage } from 'react-native'
+import { fetchDecks, createDeck, addCard } from '../utils/api';
 
 export const GET_DECKS = 'GET_DECKS';
 export const ADD_DECK_TITLE = 'ADD_DECK_TITLE';
 export const ADD_CARD_TO_DECK = 'ADD_CARD_TO_DECK';
 export const DELETE_DECK = 'DELETE_DECK';
 
-const DECKS_STORAGE_KEY = 'UdaciCards:Decks';
-
 export const getDecks = () => dispatch => {
-  AsyncStorage.getItem(DECKS_STORAGE_KEY)
+  fetchDecks()
     .then((response) => {
+      console.log('get decks:', response)
       return dispatch({
         type: GET_DECKS,
-        payload: JSON.parse(response)
+        payload: response
       })
     })
 };
 
 export const addDeckTitle = (title) => dispatch => {
+  console.log(title)
   const newDeck = {
     title,
     questions: []
   };
-  AsyncStorage.mergeItem(DECKS_STORAGE_KEY, JSON.stringify(newDeck))
+
+  createDeck(newDeck)
     .then(() => {
       return dispatch({
         type: ADD_DECK_TITLE,

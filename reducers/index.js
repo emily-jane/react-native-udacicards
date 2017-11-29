@@ -8,9 +8,7 @@ import {
 function decks (state = [], action) {
   switch (action.type) {
     case GET_DECKS :
-      return [
-        ...action.payload
-      ]
+      return action.payload
     case ADD_DECK_TITLE :
       return [
         ...state,
