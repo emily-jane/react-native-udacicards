@@ -7,49 +7,17 @@ import {
   TouchableOpacity,
   Animated
 } from 'react-native';
-import { darkGreen, brightGreen, red, white, darkOrange } from '../utils/colours';
+import { darkGreen, brightGreen, red, white, darkOrange, lightGrey } from '../utils/colours';
 import { connect } from 'react-redux';
+import FlipView from 'react-native-flip-view-next';
 
 class Quiz extends Component {
   constructor(props) {
     super(props);
     this.state = {
       questionsCompleted: 0,
-      score: 0
-    }
-  }
-
-  componentWillMount() {
-    this.animatedValue = new Animated.Value(0);
-    this.value = 0;
-    this.animatedValue.addListener(({ value }) => {
-      this.value = value;
-    })
-    this.frontInterpolate = this.animatedValue.interpolate({
-      inputRange: [0, 180],
-      outputRange: ['0deg', '180deg'],
-    })
-    this.backInterpolate = this.animatedValue.interpolate({
-      inputRange: [0, 180],
-      outputRange: ['180deg', '360deg']
-    })
-  }
-
-  flipCard() {
-    console.log('flipping')
-    if (this.value >= 90) {
-      console.log('front')
-      Animated.spring(this.animatedValue,{
-        toValue: 0,
-        friction: 8,
-        tension: 10
-      }).start();
-    } else {
-      Animated.spring(this.animatedValue,{
-        toValue: 180,
-        friction: 8,
-        tension: 10
-      }).start();
+      score: 0,
+      isFlipped: false
     }
   }
 
@@ -62,7 +30,6 @@ class Quiz extends Component {
   }
 
   noQuestions() {
-    console.log('no questions')
     return (
       <View style={styles.container}>
         <Text style={styles.title}>
@@ -76,7 +43,6 @@ class Quiz extends Component {
   }
 
   quizCompleted() {
-    console.log('quiz completed')
     return (
       <View style={styles.container}>
         <Text style={styles.title}>
@@ -85,9 +51,11 @@ class Quiz extends Component {
         <Text style={styles.questionTally}>
           Final score is {this.state.score} out of {this.props.deck.questions.length}
         </Text>
-        <TouchableOpacity onPress={this.restartQuiz.bind(this)} style={[styles.submitBtn, {backgroundColor: darkOrange}]}>
-          <Text style={styles.submitBtnText}>Restart Quiz</Text>
-        </TouchableOpacity>
+        <View style={styles.btnContainer}>
+          <TouchableOpacity onPress={this.restartQuiz.bind(this)} style={[styles.submitBtn, {backgroundColor: darkOrange}]}>
+            <Text style={styles.submitBtnText}>Restart Quiz</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     )
   }
@@ -95,32 +63,59 @@ class Quiz extends Component {
   questionCorrect() {
     this.setState((prevState) => ({
       questionsCompleted: prevState.questionsCompleted + 1,
-      score: prevState.score + 1
+      score: prevState.score + 1,
+      isFlipped: false
     }))
   }
 
   questionIncorrect() {
     this.setState((prevState) => ({
-      questionsCompleted: prevState.questionsCompleted + 1
+      questionsCompleted: prevState.questionsCompleted + 1,
+      isFlipped: false
     }))
   }
+
+  renderFront(question, questionsCompleted, questionCount) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.questionTally}>Question {questionsCompleted + 1} of {questionCount}</Text>
+        <TouchableOpacity style={styles.questionCard} onPress={this.flipCard.bind(this)}>
+          <Text style={styles.cardText}>{question}</Text>
+        </TouchableOpacity>
+        <View style={styles.btnContainer}>
+          <Text style={[styles.questionTally, {fontSize: 18}]}>Flip card for the answer!</Text>
+        </View>
+      </View>
+    );
+  };
+
+  renderBack(answer, questionsCompleted, questionCount) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.questionTally}>Question {questionsCompleted + 1} of {questionCount}</Text>
+        <TouchableOpacity style={styles.questionCard} onPress={this.flipCard.bind(this)}>
+          <Text style={styles.cardText}>{answer}</Text>
+        </TouchableOpacity>
+        <View style={styles.btnContainer}>
+          <TouchableOpacity onPress={this.questionCorrect.bind(this)} style={[styles.submitBtn, {backgroundColor: brightGreen}]}>
+            <Text style={styles.submitBtnText}>Correct</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.questionIncorrect.bind(this)} style={[styles.submitBtn, {backgroundColor: red}]}>
+            <Text style={styles.submitBtnText}>Incorrect</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+
+  flipCard() {
+    this.setState({isFlipped: !this.state.isFlipped});
+  };
 
   render() {
     const { title, questions } = this.props.deck;
     const { questionsCompleted } = this.state;
     const questionCount = questions.length;
-    console.log(questionsCompleted);
-
-    const frontAnimatedStyle = {
-      transform: [
-        { rotateY: this.frontInterpolate}
-      ]
-    }
-    const backAnimatedStyle = {
-      transform: [
-        { rotateY: this.backInterpolate }
-      ]
-    }
 
     if (questionCount === 0) {
       return this.noQuestions();
@@ -133,23 +128,15 @@ class Quiz extends Component {
     const { question, answer } = this.props.deck.questions[questionsCompleted];
 
     return (
-      <View style={styles.container}>
-        <View>
-          <Animated.View style={[styles.flipCard, frontAnimatedStyle]}>
-            <Text style={styles.flipText}>
-              This text is flipping on the front.
-            </Text>
-          </Animated.View>
-          <Animated.View style={[backAnimatedStyle, styles.flipCard, styles.flipCardBack]}>
-            <Text style={styles.flipText}>
-              This text is flipping on the back.
-            </Text>
-          </Animated.View>
-        </View>
-        <TouchableOpacity onPress={() => this.flipCard()}>
-          <Text>Flip!</Text>
-        </TouchableOpacity>
-      </View>
+        <FlipView style={{flex: 1}}
+                  front={this.renderFront(question, questionsCompleted, questionCount)}
+                  back={this.renderBack(answer, questionsCompleted, questionCount)}
+                  isFlipped={this.state.isFlipped}
+                  onFlipped={(val) => {console.log('Flipped: ' + val);}}
+                  flipAxis="y"
+                  flipEasing={Easing.out(Easing.ease)}
+                  flipDuration={500}
+                  perspective={1000}/>
     )
   };
 };
@@ -160,14 +147,40 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   title: {
+    flex: 1,
     fontSize: 32,
     textAlign: 'center',
-    marginBottom: 30
+    marginBottom: 30,
+    marginTop: 30
   },
   questionTally: {
-    fontSize: 20,
+    flex: 1,
+    fontSize: 24,
     textAlign: 'center',
-    marginBottom: 30
+    marginTop: 30,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  questionCard: {
+    flex: 2,
+    padding: 20,
+    backgroundColor: lightGrey,
+    marginLeft: 15,
+    marginRight: 15,
+    borderStyle: 'solid',
+    borderWidth: 3,
+    borderColor: darkGreen,
+    borderRadius: 6,
+    width: 300
+  },
+  cardText: {
+    fontSize: 24,
+    color: darkGreen
+  },
+  btnContainer: {
+    flex: 2,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   submitBtn: {
     padding: 10,
@@ -183,26 +196,6 @@ const styles = StyleSheet.create({
     color: white,
     fontSize: 18,
     textAlign: 'center'
-  },
-  flipCard: {
-    width: 200,
-    height: 200,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'blue',
-    backfaceVisibility: 'hidden',
-  },
-  flipCardBack: {
-    backgroundColor: "red",
-    position: "absolute",
-    top: 0,
-    // transform: [{rotateY: '180deg'}]
-  },
-  flipText: {
-    width: 90,
-    fontSize: 20,
-    color: 'white',
-    fontWeight: 'bold',
   }
 })
 

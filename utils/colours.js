@@ -5,3 +5,4 @@ export const brightGreen = '#00CC00';
 export const white = '#FFFFFF';
 export const darkOrange = '#CC5500';
 export const red = '#CC0000';
+export const lightGrey = '#D3D3D3';
