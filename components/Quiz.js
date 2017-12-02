@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Easing,
   Text,
   View,
   StyleSheet,
@@ -8,7 +9,6 @@ import {
 } from 'react-native';
 import { darkGreen, brightGreen, red, white, darkOrange } from '../utils/colours';
 import { connect } from 'react-redux';
-import FlipCard from 'react-native-flip-card';
 
 class Quiz extends Component {
   constructor(props) {
@@ -16,6 +16,40 @@ class Quiz extends Component {
     this.state = {
       questionsCompleted: 0,
       score: 0
+    }
+  }
+
+  componentWillMount() {
+    this.animatedValue = new Animated.Value(0);
+    this.value = 0;
+    this.animatedValue.addListener(({ value }) => {
+      this.value = value;
+    })
+    this.frontInterpolate = this.animatedValue.interpolate({
+      inputRange: [0, 180],
+      outputRange: ['0deg', '180deg'],
+    })
+    this.backInterpolate = this.animatedValue.interpolate({
+      inputRange: [0, 180],
+      outputRange: ['180deg', '360deg']
+    })
+  }
+
+  flipCard() {
+    console.log('flipping')
+    if (this.value >= 90) {
+      console.log('front')
+      Animated.spring(this.animatedValue,{
+        toValue: 0,
+        friction: 8,
+        tension: 10
+      }).start();
+    } else {
+      Animated.spring(this.animatedValue,{
+        toValue: 180,
+        friction: 8,
+        tension: 10
+      }).start();
     }
   }
 
@@ -77,6 +111,17 @@ class Quiz extends Component {
     const questionCount = questions.length;
     console.log(questionsCompleted);
 
+    const frontAnimatedStyle = {
+      transform: [
+        { rotateY: this.frontInterpolate}
+      ]
+    }
+    const backAnimatedStyle = {
+      transform: [
+        { rotateY: this.backInterpolate }
+      ]
+    }
+
     if (questionCount === 0) {
       return this.noQuestions();
     }
@@ -89,90 +134,40 @@ class Quiz extends Component {
 
     return (
       <View style={styles.container}>
-        <Text style={styles.questionTally}>Question {questionsCompleted + 1} of {questionCount}</Text>
-        <View style={styles.flipCard}>
-          <FlipCard
-            style={styles.questionCard}
-            friction={6}
-            perspective={1000}
-            flipHorizontal={true}
-            flipVertical={false}
-            flip={false}
-            clickable={true}
-            onFlipEnd={(isFlipEnd)=>{console.log('isFlipEnd', isFlipEnd)}}
-          >
-            <View style={styles.question}>
-              <Text>{question}</Text>
-            </View>
-            <View style={styles.answer}>
-              <Text>{answer}</Text>
-            </View>
-          </FlipCard>
+        <View>
+          <Animated.View style={[styles.flipCard, frontAnimatedStyle]}>
+            <Text style={styles.flipText}>
+              This text is flipping on the front.
+            </Text>
+          </Animated.View>
+          <Animated.View style={[backAnimatedStyle, styles.flipCard, styles.flipCardBack]}>
+            <Text style={styles.flipText}>
+              This text is flipping on the back.
+            </Text>
+          </Animated.View>
         </View>
-        <View style={styles.btnContainer}>
-          <TouchableOpacity onPress={this.questionCorrect.bind(this)} style={[styles.submitBtn, {backgroundColor: brightGreen}]}>
-            <Text style={styles.submitBtnText}>Correct</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this.questionIncorrect.bind(this)} style={[styles.submitBtn, {backgroundColor: red}]}>
-            <Text style={styles.submitBtnText}>Incorrect</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={() => this.flipCard()}>
+          <Text>Flip!</Text>
+        </TouchableOpacity>
       </View>
     )
   };
 };
-
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   title: {
     fontSize: 32,
     textAlign: 'center',
-    marginBottom: 30,
-    paddingLeft: 10,
-    paddingRight: 20
+    marginBottom: 30
   },
   questionTally: {
-    flex: 1,
     fontSize: 20,
     textAlign: 'center',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  flipCard: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 400,
-    alignSelf: 'stretch'
-  },
-  questionCard: {
-    backgroundColor: '#F2F2F2',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 30,
-    marginBottom: 8,
-    marginLeft: 8,
-    marginRight: 8,
-    borderRadius: 8,
-    // backfaceVisibility: 'hidden'
-  },
-  question: {
-    flex: 1,
-    height: 200,
-    justifyContent: 'center',
-    flexDirection: 'column',
-  },
-  answer: {
-    transform: [{scaleX: -1}],
-    flex: 1,
-    height: 200,
-    justifyContent: 'center',
-    flexDirection: 'column',
-  },
-  btnContainer: {
-    flex: 1
+    marginBottom: 30
   },
   submitBtn: {
     padding: 10,
@@ -188,6 +183,26 @@ const styles = StyleSheet.create({
     color: white,
     fontSize: 18,
     textAlign: 'center'
+  },
+  flipCard: {
+    width: 200,
+    height: 200,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'blue',
+    backfaceVisibility: 'hidden',
+  },
+  flipCardBack: {
+    backgroundColor: "red",
+    position: "absolute",
+    top: 0,
+    // transform: [{rotateY: '180deg'}]
+  },
+  flipText: {
+    width: 90,
+    fontSize: 20,
+    color: 'white',
+    fontWeight: 'bold',
   }
 })
 
