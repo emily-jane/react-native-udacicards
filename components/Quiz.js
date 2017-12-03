@@ -122,34 +122,42 @@ class Quiz extends Component {
   };
 
   render() {
-    const { title, questions } = this.props.deck;
-    const { questionsCompleted } = this.state;
-    const questionCount = questions.length;
+    if (this.props.deck) {
+      const { title, questions } = this.props.deck;
+      const { questionsCompleted } = this.state;
+      const questionCount = questions.length;
 
-    if (questionCount === 0) {
-      return this.noQuestions();
+      if (questionCount === 0) {
+        return this.noQuestions();
+      }
+
+      if (questionsCompleted === questionCount) {
+        clearLocalNotification()
+          .then(setLocalNotification);
+
+        return this.quizCompleted();
+      }
+
+      if (this.props.deck.questions[questionsCompleted]) {
+        const { question, answer } = this.props.deck.questions[questionsCompleted];
+
+        return (
+          <FlipView style={{flex: 1}}
+                    front={this.renderFront(question, questionsCompleted, questionCount)}
+                    back={this.renderBack(answer, questionsCompleted, questionCount)}
+                    isFlipped={this.state.isFlipped}
+                    onFlipped={(val) => {console.log('Flipped: ' + val);}}
+                    flipAxis="y"
+                    flipEasing={Easing.out(Easing.ease)}
+                    flipDuration={500}
+                    perspective={1000}/>
+        )
+      } else {
+        return null
+      }
+    } else {
+      return null
     }
-
-    if (questionsCompleted === questionCount) {
-      clearLocalNotification()
-        .then(setLocalNotification);
-
-      return this.quizCompleted();
-    }
-
-    const { question, answer } = this.props.deck.questions[questionsCompleted];
-
-    return (
-        <FlipView style={{flex: 1}}
-                  front={this.renderFront(question, questionsCompleted, questionCount)}
-                  back={this.renderBack(answer, questionsCompleted, questionCount)}
-                  isFlipped={this.state.isFlipped}
-                  onFlipped={(val) => {console.log('Flipped: ' + val);}}
-                  flipAxis="y"
-                  flipEasing={Easing.out(Easing.ease)}
-                  flipDuration={500}
-                  perspective={1000}/>
-    )
   };
 };
 const styles = StyleSheet.create({
