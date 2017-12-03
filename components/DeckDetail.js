@@ -4,7 +4,8 @@ import {
   Text,
   View,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from 'react-native';
 import { darkGreen, white, darkOrange, red } from '../utils/colours';
 import { connect } from 'react-redux';
@@ -18,16 +19,22 @@ class DeckDetail extends Component {
     this.props.navigation.navigate('Quiz', this.props.deck)
   }
 
-  // toDeckList = () => {
-  //   this.props.navigation.navigate('Decks');
-  // };
-
   removeDeck() {
-    // this.props.deleteDeck(this.props.deck.title);
-    // this.toDeckList();
     this.props.deleteDeck(this.props.deck.title, () => {
       this.props.navigation.navigate('Decks');
     })
+  }
+
+  removeDeckAlert() {
+    Alert.alert(
+      'Delete Deck',
+      `Are you sure you want to delete deck ${this.props.deck.title}?`,
+      [
+        {text: 'No', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        {text: 'Yes', onPress: () => this.removeDeck()},
+      ],
+      { cancelable: false }
+    )
   }
 
   render() {
@@ -40,7 +47,7 @@ class DeckDetail extends Component {
         <View style={styles.container}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.deckCount}>{`${questionCount} card${questionCount === 1 ? '' : 's'}`}</Text>
-          <TouchableOpacity onPress={this.removeDeck.bind(this)} style={[styles.submitBtn, {backgroundColor: red}]}>
+          <TouchableOpacity onPress={this.removeDeckAlert.bind(this)} style={[styles.submitBtn, {backgroundColor: red}]}>
             <Text style={styles.submitBtnText}>Delete Deck</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={this.addCard.bind(this)} style={styles.submitBtn}>
