@@ -15,19 +15,14 @@ export const getDecks = () => dispatch => {
     })
 };
 
-export const addDeckTitle = (title) => dispatch => {
-  const newDeck = {
-    title,
-    questions: []
-  };
-
+export const addDeckTitle = (newDeck,callback) => (dispatch) => {
   createDeck(newDeck)
     .then(() => {
       return dispatch({
         type: ADD_DECK_TITLE,
-        payload: newDeck
+        payload: newDeck,
       })
-    })
+    }).then(() => callback());
 };
 
 export const addCardToDeck = (question, answer, deck) => dispatch => {
@@ -41,11 +36,13 @@ export const addCardToDeck = (question, answer, deck) => dispatch => {
 
   createDeckCard(newCard)
     .then(() => {
-      return dispatch({
-        type: ADD_CARD_TO_DECK,
-        payload: newCard
-      })
-    })
+      callback();
+    });
+
+  return dispatch({
+    type: ADD_CARD_TO_DECK,
+    payload: newCard
+  })
 };
 
 // export const deleteDeck = (deck) => dispatch => {

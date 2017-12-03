@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Keyboard,
   KeyboardAvoidingView
 } from 'react-native';
 import { darkGreen, white, red } from '../utils/colours';
@@ -27,9 +28,9 @@ class NewDeck extends Component {
     })
   }
 
-  toHome() {
-    this.props.navigation.navigate('Decks');
-  }
+  toDeckDetail = (deck) => {
+    this.props.navigation.navigate('DeckDetail', deck);
+  };
 
   createDeck() {
     if (this.state.text === '') {
@@ -37,9 +38,15 @@ class NewDeck extends Component {
     } else if (this.deckExists(this.state.text) !== undefined) {
       this.setState({error: `Deck title already exists`})
     } else {
-      this.props.addDeckTitle(this.state.text);
+      const newDeck = {
+        title: this.state.text,
+        questions: []
+      };
+      Keyboard.dismiss();
       this.resetForm();
-      this.toHome();
+      this.props.addDeckTitle(newDeck, () => {
+        this.toDeckDetail(newDeck)
+      });
     }
   }
 
