@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Keyboard,
   KeyboardAvoidingView
 } from 'react-native';
 import { addCardToDeck } from '../actions';
@@ -20,7 +21,17 @@ class NewCard extends Component {
     }
   }
 
+
+  resetForm() {
+    this.setState({
+      question: '',
+      answer: ''
+    })
+  }
+
   addCard() {
+    Keyboard.dismiss();
+    this.resetForm();
     this.props.addCardToDeck(this.state.question, this.state.answer, this.props.navigation.state.params.title);
     this.props.navigation.navigate('DeckDetail', this.props.navigation.state.params);
   }

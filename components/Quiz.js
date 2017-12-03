@@ -29,15 +29,21 @@ class Quiz extends Component {
     this.props.navigation.navigate('Quiz', this.props.deck)
   }
 
+  toDeckDetail() {
+    this.props.navigation.navigate('DeckDetail', this.props.deck);
+  }
+
   noQuestions() {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>
           There are not yet any questions in this quiz!
         </Text>
-        <TouchableOpacity onPress={this.addCard.bind(this)} style={[styles.submitBtn, {backgroundColor: darkGreen}]}>
-          <Text style={styles.submitBtnText}>Add Question</Text>
-        </TouchableOpacity>
+        <View style={styles.btnContainer}>
+          <TouchableOpacity onPress={this.addCard.bind(this)} style={[styles.submitBtn, {backgroundColor: darkGreen}]}>
+            <Text style={styles.submitBtnText}>Add Question</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     )
   }
@@ -52,6 +58,9 @@ class Quiz extends Component {
           Final score is {this.state.score} out of {this.props.deck.questions.length}
         </Text>
         <View style={styles.btnContainer}>
+          <TouchableOpacity onPress={this.toDeckDetail.bind(this)} style={[styles.submitBtn, {backgroundColor: darkGreen}]}>
+            <Text style={styles.submitBtnText}>Back to Deck</Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={this.restartQuiz.bind(this)} style={[styles.submitBtn, {backgroundColor: darkOrange}]}>
             <Text style={styles.submitBtnText}>Restart Quiz</Text>
           </TouchableOpacity>
