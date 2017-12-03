@@ -8,7 +8,6 @@ export const DELETE_DECK = 'DELETE_DECK';
 export const getDecks = () => dispatch => {
   fetchDecks()
     .then((response) => {
-      console.log('get decks:', response)
       return dispatch({
         type: GET_DECKS,
         payload: response
@@ -17,7 +16,6 @@ export const getDecks = () => dispatch => {
 };
 
 export const addDeckTitle = (title) => dispatch => {
-  console.log(title)
   const newDeck = {
     title,
     questions: []

@@ -14,6 +14,7 @@ import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import decks from './reducers';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { setLocalNotification } from './utils/notification';
 
 function AppStatusBar ({ backgroundColor, ...props }) {
   return (
@@ -101,6 +102,10 @@ const store = createStore(
 )
 
 export default class App extends Component {
+  componentDidMount() {
+    setLocalNotification();
+  }
+
   render() {
     return (
       <Provider store={store}>

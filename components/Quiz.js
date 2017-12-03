@@ -4,12 +4,12 @@ import {
   Text,
   View,
   StyleSheet,
-  TouchableOpacity,
-  Animated
+  TouchableOpacity
 } from 'react-native';
 import { darkGreen, brightGreen, red, white, darkOrange, lightGrey } from '../utils/colours';
 import { connect } from 'react-redux';
 import FlipView from 'react-native-flip-view-next';
+import { clearLocalNotification, setLocalNotification } from '../utils/notification';
 
 class Quiz extends Component {
   constructor(props) {
@@ -122,6 +122,9 @@ class Quiz extends Component {
     }
 
     if (questionsCompleted === questionCount) {
+      clearLocalNotification()
+        .then(setLocalNotification);
+
       return this.quizCompleted();
     }
 
