@@ -114,3 +114,14 @@ export function createDeckCard(newCard) {
       return (data);
     });
 }
+
+export function removeDeck(title) {
+  return AsyncStorage.getItem(DECKS_STORAGE_KEY)
+    .then((results) => {
+      const data = JSON.parse(results).filter((deck) => {
+        return deck.title !== title
+      });
+      AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(data));
+      return (data);
+    })
+}

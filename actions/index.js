@@ -1,4 +1,4 @@
-import { fetchDecks, createDeck, createDeckCard } from '../utils/api';
+import { fetchDecks, createDeck, createDeckCard, removeDeck } from '../utils/api';
 
 export const GET_DECKS = 'GET_DECKS';
 export const ADD_DECK_TITLE = 'ADD_DECK_TITLE';
@@ -36,15 +36,18 @@ export const addCardToDeck = (question, answer, deck) => dispatch => {
 
   createDeckCard(newCard)
     .then(() => {
-      callback();
+       return dispatch({
+        type: ADD_CARD_TO_DECK,
+        payload: newCard
+      })
     });
-
-  return dispatch({
-    type: ADD_CARD_TO_DECK,
-    payload: newCard
-  })
 };
 
-// export const deleteDeck = (deck) => dispatch => {
-//   AsyncStorage.removeItem(DECKS_STORAGE_KEY, )
-// }
+export function deleteDeck(title, callback) {
+  removeDeck(title).then(() => callback());
+
+  return {
+    type: DELETE_DECK,
+    payload: title
+  }
+}

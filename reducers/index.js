@@ -18,6 +18,10 @@ function decks (state = [], action) {
       return state.map((deck) => {
         return (deck.title === action.payload.title) ? {...deck, questions: [...deck.questions, ...action.payload.questions]} : deck
       })
+    case DELETE_DECK :
+      return state.filter((deck) => {
+        return deck.title !== action.payload
+      })
     default :
       return [
         ...state

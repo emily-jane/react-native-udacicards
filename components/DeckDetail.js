@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import { deleteDeck } from '../actions';
 import {
   Text,
   View,
   StyleSheet,
   TouchableOpacity
 } from 'react-native';
-import { darkGreen, white, darkOrange } from '../utils/colours';
+import { darkGreen, white, darkOrange, red } from '../utils/colours';
 import { connect } from 'react-redux';
 
 class DeckDetail extends Component {
@@ -17,22 +18,42 @@ class DeckDetail extends Component {
     this.props.navigation.navigate('Quiz', this.props.deck)
   }
 
-  render() {
-    const { title, questions } = this.props.deck;
-    const questionCount = questions.length;
+  // toDeckList = () => {
+  //   this.props.navigation.navigate('Decks');
+  // };
 
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.deckCount}>{`${questionCount} card${questionCount === 1 ? '' : 's'}`}</Text>
-        <TouchableOpacity onPress={this.addCard.bind(this)} style={styles.submitBtn}>
-          <Text style={styles.submitBtnText}>Add Question</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.startQuiz.bind(this)} style={[styles.submitBtn, {backgroundColor: darkOrange}]}>
-          <Text style={styles.submitBtnText}>START QUIZ!</Text>
-        </TouchableOpacity>
-      </View>
-    )
+  removeDeck() {
+    // this.props.deleteDeck(this.props.deck.title);
+    // this.toDeckList();
+    this.props.deleteDeck(this.props.deck.title, () => {
+      this.props.navigation.navigate('Decks');
+    })
+  }
+
+  render() {
+    if (this.props.deck) {
+
+      const { title, questions } = this.props.deck;
+      const questionCount = questions.length;
+
+      return (
+        <View style={styles.container}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.deckCount}>{`${questionCount} card${questionCount === 1 ? '' : 's'}`}</Text>
+          <TouchableOpacity onPress={this.removeDeck.bind(this)} style={[styles.submitBtn, {backgroundColor: red}]}>
+            <Text style={styles.submitBtnText}>Delete Deck</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.addCard.bind(this)} style={styles.submitBtn}>
+            <Text style={styles.submitBtnText}>Add Question</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.startQuiz.bind(this)} style={[styles.submitBtn, {backgroundColor: darkOrange}]}>
+            <Text style={styles.submitBtnText}>START QUIZ!</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    } else {
+      return null
+    }
   }
  }
 
@@ -76,4 +97,4 @@ function mapStateToProps (state, ownProps) {
   }
 };
 
-export default connect(mapStateToProps, {})(DeckDetail);
+export default connect(mapStateToProps, { deleteDeck })(DeckDetail);
